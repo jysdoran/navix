@@ -261,31 +261,22 @@ def flatten_patches(image: Array, patch_size: Tuple[int, int] = (TILE_SIZE, TILE
     width = image.shape[1] // patch_size[1]
     n_channels = image.shape[2]
 
+    # split height and width into patch dimensions
     grid = image.reshape(height, patch_size[0], width, patch_size[1], n_channels)
 
     # Swap the first and second axes of the grid to revert the stacking order
     grid = jnp.swapaxes(grid, 1, 2)
 
-    # Reshape the grid of tiles into the original list of tiles
-    patches = grid.reshape(height * width, patch_size[0], patch_size[1], n_channels)
-
-    return patches
+    return grid
 
 
-def unflatten_patches(patches: Array, image_size: Tuple[int, int]) -> Array:
-    image_height = image_size[0]
-    image_width = image_size[1]
-    patch_height = patches.shape[1]
-    patch_width = patches.shape[2]
-    n_channels = patches.shape[3]
+def unflatten_patches(patches: Array) -> Array:
+    grid_height, grid_width, tile_height, tile_width, n_channels = patches.shape
 
-    # Reshape the list of tiles into a 2D grid
-    grid = patches.reshape(image_height // patch_height, image_width // patch_width, patch_height, patch_width, n_channels)
+    # Swap the first and second axes of the grid to revert the stacking order
+    patches = jnp.swapaxes(patches, 1, 2)
 
-    # Swap the first and second axes of the grid to change the order of stacking
-    grid = jnp.swapaxes(grid, 1, 2)
-
-    # Reshape and stack the grid tiles horizontally and vertically to form the final image
-    image = grid.reshape(image_height, image_width, n_channels)
+    # reshape patches to image
+    image = patches.reshape(grid_height * tile_height, grid_width * tile_width, n_channels)
 
     return image

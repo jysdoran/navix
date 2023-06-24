@@ -86,20 +86,12 @@ def rgb(
     # cache: graphics.RenderingCache,
     tiles_registry: Dict[str, Array] = graphics.TILES_REGISTRY,
 ) -> Array:
-    # TODO(epignatelli): we can simplify this by indexing from tuples directly
-    # e.g., background[tuple(positions.T)]
-    # this allows to remove:
-    # the idx_from_coordinates function, the
-    # graphics.unflatten_patches function (replace it with a simpler reshape), and the
-    # graphics.flatten_patches function from `env.reset`
-
-    # get idx of entity on the flat set of patches
-    indices = idx_from_coordinates(state.grid, state.get_positions(axis=0))
+    # get the position of the entities
+    positions = state.get_positions(axis=0)
     # get tiles corresponding to the entities
     tiles = state.get_tiles(tiles_registry, axis=0)
     # set tiles on the flat set of patches
-    patches = state.cache.patches.at[indices].set(tiles)
+    patches = state.cache.patches.at[tuple(positions.T)].set(tiles)
     # unflatten patches to reconstruct the image
-    image_size = (state.grid.shape[0] * graphics.TILE_SIZE, state.grid.shape[1] * graphics.TILE_SIZE)
-    image = graphics.unflatten_patches(patches, image_size)
+    image = graphics.unflatten_patches(patches)
     return image

@@ -6,8 +6,8 @@ import jax.numpy as jnp
 import navix as nx
 
 
-N_TIMEIT_LOOPS = 10
-N_REPEAT = 30
+N_TIMEIT_LOOPS = 20
+N_REPEAT = 50
 N_TIMESTEPS = 1000
 N_SEEDS = 10
 
@@ -49,6 +49,6 @@ def test_observation(observation_fn):
 
 
 if __name__ == "__main__":
-    test_observation(nx.observations.none)
-    test_observation(nx.observations.categorical)
+    # test_observation(nx.observations.none)
+    # test_observation(nx.observations.categorical)
     test_observation(nx.observations.rgb)
