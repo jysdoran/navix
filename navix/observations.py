@@ -71,14 +71,11 @@ def categorical(
     tiles_registry: Dict[str, Array] = graphics.TILES_REGISTRY,
 ) -> Array:
     # get idx of entity on the set of patches
-    indices = idx_from_coordinates(state.grid, state.get_positions(axis=0))
+    positions = state.get_positions(axis=0)
     # get tags corresponding to the entities
     tags = state.get_tags(axis=0)
     # set tags on the flat set of patches
-    shape = state.grid.shape
-    grid = state.grid.reshape(-1).at[indices].set(tags)
-    # unflatten patches to reconstruct the grid
-    return grid.reshape(shape)
+    return state.grid.at[tuple(positions.T)].set(tags)
 
 
 def rgb(

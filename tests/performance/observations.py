@@ -50,5 +50,5 @@ def test_observation(observation_fn):
 
 if __name__ == "__main__":
     # test_observation(nx.observations.none)
-    # test_observation(nx.observations.categorical)
-    test_observation(nx.observations.rgb)
+    test_observation(nx.observations.categorical)
+    # test_observation(nx.observations.rgb)
